@@ -5,6 +5,29 @@
 // https://learn.adafruit.com/adafruit-feather-32u4-bluefruit-le?view=all
 // https://github.com/rkistner/arcore
 
+
+//------------------------------------------------------
+// UTILS
+
+float signFloat(float x) {
+    if (x > 0.0) { return 1.0; }
+    if (x < 0.0) { return -1.0; }
+    return 0.0;
+}
+
+float remapFloat(float x, float oldMin, float oldMax, float newMin, float newMax, boolean clamp) {
+    float pct = (x - oldMin) / (oldMax - oldMin);
+    if (clamp) {
+        if (pct < 0.0) { pct = 0.0; }
+        if (pct > 1.0) { pct = 1.0; }
+    }
+    return pct * (newMax - newMin) + newMin;
+}
+
+int clampInt(int x, int lo, int hi) {
+    return max(lo, min(hi, x));
+}
+
 //------------------------------------------------------
 // MIDI UTILS
 // https://www.arduino.cc/en/Tutorial/MidiDevice
@@ -69,7 +92,6 @@ void volumeUp() {
 #define KEY03_PIN 21  // D
 #define KEY04_PIN 22  // d#
 #define KEY05_PIN 23  // E
-
 #define KEY06_PIN 15  // F
 #define KEY07_PIN 16  // f#
 #define KEY08_PIN 14  // G
@@ -77,9 +99,9 @@ void volumeUp() {
 #define KEY10_PIN  1  // A
 #define KEY11_PIN 12  // a#
 
-#define KEY12_PIN 11  // ?
+#define KEY12_PIN 11  // L
 #define KEY13_PIN  5  // shift
-#define KEY14_PIN  3  // ??
+#define KEY14_PIN  3  // R 
 
 #define JOY_X_ANALOG_PIN A10  // joystick x axis (arduino pin 10)
 #define JOY_Y_ANALOG_PIN  A9  // joystick y axis (arduino pin 9)
@@ -90,8 +112,25 @@ void volumeUp() {
 // 6 -- can be used for neopixels
 // 2
 
-#define SHIFT_KEY 13   // as a key-number, not a pin number
+// note name to key number
+#define B_KEY   0
+#define C_KEY   1
+#define CS_KEY  2
+#define D_KEY   3
+#define DS_KEY  4
+#define E_KEY   5
+#define F_KEY   6
+#define FS_KEY  7
+#define G_KEY   8
+#define GS_KEY  9
+#define A_KEY  10
+#define AS_KEY 11
 
+#define L_KEY     12   
+#define SHIFT_KEY 13   // as a key-number, not a pin number
+#define R_KEY     14   
+
+// key number to pin number
 int keyToPin[NUM_KEYS] = {
     KEY00_PIN,  // B
     KEY01_PIN,  // C
@@ -99,7 +138,6 @@ int keyToPin[NUM_KEYS] = {
     KEY03_PIN,  // D
     KEY04_PIN,
     KEY05_PIN,  // E
-
     KEY06_PIN,  // F
     KEY07_PIN,
     KEY08_PIN,  // G
@@ -125,14 +163,59 @@ int coolDown[NUM_KEYS];
 
 // midi
 int baseTranspose = 60;  // what midi note the C key should play
-int deltaTranspose = 0;  // shift by this much when transposing
-int octaveTranspose = 0; // number of octaves to shift up or down.
+int octaveTranspose = 0; // also shift this much (multiples of 12, like -24)
 byte midiChannel = 0;
 
+byte keyToMidiNote(int key) {
+    // key 0 is B-below-middleC, midi 59
+    int result = key - 1 + baseTranspose + octaveTranspose;
+    return (byte)clampInt(result, 0, 127);
+}
+
 // joystick
-float joy_x = 0.0;
-float joy_y = 0.0;
+// range is a float -1.0 to 1.0
+// positive is up-right.
+// the middle deadzone (+/- joyDeadzone) is snipped out of the middle and
+// the remaining range is scaled to fill that space.
+// similarly the outer max zone (+/- joyMax) is snipped and the remaining
+// range is stretched to fill that space.
+float joyX = 0.0;
+float joyY = 0.0;
+float joyDeadzone = 0.1;
+float joyMax = 0.8;
+
 int joyCooldown = 0;
+
+#define DIR_NONE 0
+#define DIR_N  1
+#define DIR_E  2
+#define DIR_S  3
+#define DIR_W  4
+byte joyDirection = DIR_NONE;
+
+float computeJoyAxis(int rawJoy) {
+    // rawJoy is 0 to 1023
+    // output is a float with dead zone and outer max zone removed, scaled to -1 to 1
+    float joy = remapFloat((float)rawJoy, 0.0, 1023.0, -1.0, 1.0, true);
+    float sg = signFloat(joy);
+    joy = abs(joy);
+    joy = remapFloat(joy, joyDeadzone, joyMax, 0, 1, true) * sg;
+    return joy;
+}
+
+byte getJoyDirection(float joyX, float joyY) {
+    if (joyX == 0.0 && joyY == 0.0) { return DIR_NONE; }
+    if (abs(joyX) < abs(joyY)) {
+        // vertical
+        if (joyY > 0.0) { return DIR_N; }
+        return DIR_S;
+    } else {
+        // horizontal
+        if (joyX > 0.0) { return DIR_E; }
+        return DIR_W;
+    }
+    return DIR_NONE;
+}
 
 //------------------------------------------------------
 // SETUP
@@ -161,8 +244,10 @@ void loop() {
     if (joyCooldown <= 0) {
         // analogRead returns an int 0 - 1023, meaning 0 to 3.3 volts
         // remap to a float -1 to 1
-        joy_x = ((float)analogRead(JOY_X_ANALOG_PIN) / 1023.0 - 0.5) * 2.0;
-        joy_y = ((float)analogRead(JOY_Y_ANALOG_PIN) / 1023.0 - 0.5) * 2.0;
+        joyX = computeJoyAxis(analogRead(JOY_X_ANALOG_PIN));
+        joyY = computeJoyAxis(analogRead(JOY_Y_ANALOG_PIN));
+        //joyX = ((float)analogRead(JOY_X_ANALOG_PIN) / 1023.0 - 0.5) * 2.0;
+        //joyY = ((float)analogRead(JOY_Y_ANALOG_PIN) / 1023.0 - 0.5) * 2.0;
         joyCooldown = READ_JOY_EVERY;
     }
 
@@ -207,21 +292,30 @@ void loop() {
     //delay(2000);
 }
 
-int keyToMidiNote(int key) {
-    // key 0 is B-below-middleC, midi 59
-    return key - 1 + baseTranspose + deltaTranspose + octaveTranspose * 12;
-}
+
+//------------------------------------------------------
+// KEY HANDLERS
 
 void onKeyDown(int key) {
-    if (key >= 0 && key <= 11) {
-        // midi keys
-        noteOn(midiChannel, keyToMidiNote(key), 100);
-    } else if (key == 12) {
-        volumeDown();
-    } else if (key == SHIFT_KEY) {
-        // shift
-    } else if (key == 14) {
-        volumeUp();
+    if (keyIsDown[SHIFT_KEY]) {
+        if (key == B_KEY) { midiChannel = 1 - midiChannel; }  // toggle midi channel between 0 and 1
+        if (key == C_KEY) { octaveTranspose = -36; }
+        if (key == D_KEY) { octaveTranspose = -24; }
+        if (key == E_KEY) { octaveTranspose = -12; }
+        if (key == F_KEY) { octaveTranspose =  0; }
+        if (key == G_KEY) { octaveTranspose =  12; }
+        if (key == A_KEY) { octaveTranspose =  24; }
+    } else {
+        if (key >= 0 && key <= 11) {
+            // midi keys
+            noteOn(midiChannel, keyToMidiNote(key), 100);
+        } else if (key == L_KEY) {
+            volumeDown();
+        } else if (key == SHIFT_KEY) {
+            // shift key pressed; do nothing
+        } else if (key == R_KEY) {
+            volumeUp();
+        }
     }
 }
 void onKeyUp(int key) {
