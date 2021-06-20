@@ -6,10 +6,11 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/../libraries/**",
                 "/Applications/Arduino.app/Contents/Java/tools/**",  
-                "/Applications/Arduino.app/Contents/Java/hardware/tools/avr/avr/include",  
+                "/Applications/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/",  
                 "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/**",
-                "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino",
-                "/Users/rabbit/Library/Arduino15/packages/adafruit/hardware/avr/1.4.13/variants/feather32u4"
+                "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/",
+                "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/libraries/HID/src/",
+                "/Users/rabbit/Library/Arduino15/packages/adafruit/hardware/avr/1.4.13/variants/feather32u4/"
             ],
             "defines": [],
             "macFrameworkPath": [],
