@@ -1,4 +1,5 @@
 #include "MIDIUSB.h"
+#include "Keyboard.h"
 
 // alternate midi setup
 // https://learn.adafruit.com/adafruit-feather-32u4-bluefruit-le?view=all
@@ -21,6 +22,30 @@ void noteOn(byte channel, byte pitch, byte velocity) {
 void noteOff(byte channel, byte pitch, byte velocity) {
     midiEventPacket_t noteOn = { 0x08, 0x80 | channel, pitch, velocity };
     MidiUSB.sendMIDI(noteOn);
+}
+void volumeMute() {
+    Keyboard.press(KEY_LEFT_CTRL);
+    Keyboard.press(KEY_F10);
+    delay(75);
+    Keyboard.release(KEY_F10);
+    delay(75);
+    Keyboard.release(KEY_LEFT_CTRL);
+}
+void volumeDown() {
+    Keyboard.press(KEY_LEFT_CTRL);
+    Keyboard.press(KEY_F11);
+    delay(75);
+    Keyboard.release(KEY_F11);
+    delay(75);
+    Keyboard.release(KEY_LEFT_CTRL);
+}
+void volumeUp() {
+    Keyboard.press(KEY_LEFT_CTRL);
+    Keyboard.press(KEY_F12);
+    delay(75);
+    Keyboard.release(KEY_F12);
+    delay(75);
+    Keyboard.release(KEY_LEFT_CTRL);
 }
 
 //------------------------------------------------------
@@ -96,6 +121,8 @@ void setup() {
         coolDown[ii] = 0;
     }
     // don't need to set up the analog input pins
+
+    Keyboard.begin();
 }
 
 //------------------------------------------------------
@@ -156,11 +183,23 @@ void loop() {
 }
 
 void onKeyDown(int key) {
-    if (key == 11) { key = -1; }
-    noteOn(0, 60 + key, 100);
+    if (key >= 0 && key <= 11) {
+        // midi keys
+        if (key == 11) { key = -1; }
+        noteOn(0, 60 + key, 100);
+    } else if (key == 12) {
+        volumeDown();
+    } else if (key == 13) {
+        // shift
+    } else if (key == 14) {
+        volumeUp();
+    }
 }
 void onKeyUp(int key) {
-    noteOff(0, 60 + key, 100);
+    if (key >= 0 && key <= 11) {
+        // midi keys
+        noteOff(0, 60 + key, 100);
+    }
 }
 void onKeyStillDown(int key) {
 }
