@@ -1,10 +1,18 @@
 # Thumble
 
+![](beautyshot.png)
+
 A MIDI controller in the shape of a video game controller (e.g. xbox), but using mechanical-keyboard hardware.
 
-## How it works musically; how to play it
+## How it's designed musically; how to play it
 
-Use your thumbs!
+Hold it like an Xbox controller.  Play it like a kalimba, with your thumbs.
+
+The diagonal keys are notes; the 3 keys in the middle are extra function keys.  The joystick is for pitch bends, etc.
+
+Unlike a kalimba, the notes are arranged piano style.  There's one octave starting at B on the left and ascending to Bb on the right.  Generally, white keys are on the bottom row and black keys are on the top row.
+
+This is a Shepard Tone keyboard - TODO, explain this.
 
 ## Hardware
 
@@ -19,9 +27,7 @@ Use your thumbs!
 
 ## Case
 
-I used a laser cutter to cut the enclosure.  I cut it from 3mm plywood (1/8 inch), but you could also use acrylic if you added more screw holes.  See the SVG files in the `case` folder.
-
-The case is made of several layers stacked up.  With wood you can glue them; with acrylic you'll have to figure out screws or something.
+The case is laser cut from 7 layers of 1/8 inch material (3mm).  I used plywood and glued the layers, or you could use acrylic and figure out some screw holes.  The SVG files are in the `case` folder.
 
 ## Soldering
 
