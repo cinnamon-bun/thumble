@@ -14,6 +14,8 @@ Unlike a kalimba, the notes are arranged piano style.  There's one octave starti
 
 This is a Shepard Tone keyboard - TODO, explain this.
 
+The special middle keys P, Q, and R have not been assigned to functions yet.  One will be a Shift key which accesses hidden features in the other keys such as transposing, changing MIDI channels, changing system volume, etc.
+
 ## Hardware
 
 1. [Feather 32u4 basic proto](https://www.adafruit.com/product/2771), from Adafruit
