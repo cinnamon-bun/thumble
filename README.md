@@ -82,6 +82,6 @@ For simplicity, a few GND wires can run along tracks in the case and connect to 
 
 The joystick uses up two analog inputs.
 
-Wiring diagram (click to enlarge):
+Wiring diagram ([click to enlarge](https://raw.githubusercontent.com/cinnamon-bun/thumble/main/final_v006-wiring.png)):
 
 ![](final_v006-wiring.png)
