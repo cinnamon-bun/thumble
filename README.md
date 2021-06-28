@@ -2,7 +2,7 @@
 
 ![](beautyshot.png)
 
-A MIDI controller in the shape of a video game controller (e.g. xbox), but using mechanical-keyboard hardware.
+A MIDI controller in the shape of a video game controller (e.g. xbox), but using mechanical-keyboard buttons.
 
 ## How it's designed musically; how to play it
 
@@ -10,9 +10,9 @@ Hold it like an Xbox controller.  Play it like a kalimba, with your thumbs.
 
 The diagonal keys are notes; the 3 keys in the middle are extra function keys.  The joystick is for pitch bends, etc.
 
-Unlike a kalimba, the notes are arranged piano style.  There's one octave starting at B on the left and ascending to Bb on the right.  Generally, white keys are on the bottom row and black keys are on the top row.
+Unlike a kalimba, the notes are arranged piano style.  There's one octave starting at B on the left and ascending to Bb on the right.  Like a piano, white keys are on the bottom row and black keys are on the top row (except for B).
 
-The special middle keys P, Q, and R have not been assigned to functions yet.  One will be a Shift key which accesses hidden features in the other keys such as transposing, changing MIDI channels, changing system volume, etc.
+The special middle keys P, Q, and R have not been assigned to functions yet.  One will be a Shift key which accesses hidden features in the other keys such as transposing, changing MIDI channels, changing system volume, etc.  TODO.
 
 ## Shepard Tones
 
@@ -30,17 +30,24 @@ For example:
 * and eventually we end up back where we started:
 * B plays B0 at 42% and B1 at 58%
 
-
 ## Hardware
 
-1. Microcontroller: [Feather 32u4 basic proto](https://www.adafruit.com/product/2771), from Adafruit
-2. Cherry MX compatible keyswitches (x 15)
+1. Arduino / microcontroller: [Feather 32u4 basic proto](https://www.adafruit.com/product/2771), from Adafruit.  If these are out of stock, look for the exact same thing on Amazon (sold by Adafruit).
+1. Cherry MX compatible keyswitches (x 15)
     * I used [Gateron Silent Clear](https://novelkeys.xyz/products/gateron-silent-switches?_pos=2&_sid=fd79d8abc&_ss=r) since they have the weakest springs available and no tactile bump
-3. Keycaps (x 15)
+1. Keycaps (x 15)
     * I used these [XDA profile](https://www.amazon.com/gp/product/B092H93KP6/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1) keycaps because they're pretty flat on top so it's easy to slide your thumbs around
-4. This [joystick](https://www.adafruit.com/product/245) from Adafruit
-4. Some wires
-5. Soldering equipment
+1. This [joystick](https://www.adafruit.com/product/245) from Adafruit
+1. Some wires
+1. Soldering equipment
+
+### Alternative hardware
+
+The [Elite-C](https://keeb.io/products/elite-c-low-profile-version-usb-c-pro-micro-replacement-atmega32u4) uses the same chip as the Feather, but the physical hardware is better.   It's smaller, and it has a strong USB-C port, while the Feather's USB-Micro port tends to rip off if the cord is pulled.
+
+However the Elite-C can't be flashed from the Arduino IDE (because it uses the DFU bootloader instead of the Caterina bootloader that's normal for Arduino boards.)  You have to use the command line to flash it, and I'm not sure how to compile the code for it or make sure it supports MIDI-over-USB.
+
+If you know how to solve that problem, you can use the Elite-C instead.  Note though that the case is designed for the Feather, which is larger.
 
 ## Case
 
@@ -50,38 +57,59 @@ The case is laser cut from 7 layers of 1/8 inch material (3mm).  I used plywood 
 
 The joystick and microcontroller are also a bit loose in the case; you'll have to improvise a way to keep them stable.  Maybe a spare piece of wood to pack the space below them.
 
+The top layer SVG is flipped so that the laser smoke marks end up inside the case instead of outside.  Case level 4 is hollow, make three of those to stack up enough interior space for wiring.
+
 ## Assembly sequence
 
-1. Align plywood layers, test-fitting keyswitches to ensure precise alignment.
-2. Glue plywood layers except the back panel.
-3. Sand and finish the plywood.  Round off the edges of the handle to make it more comfortable to hold.
-4. Glue in the keyswitches, being carful not to get glue on the metal contacts.
-5. Put in the joystick and microcontroller and affix them somehow.
-6. Solder wires between everything.
-7. Flash software to the microcontroller and test everything.
-8. Add more supports around the back of the joystick and microcontroller to hold them steady when squeezed by the back panel.  Maybe glue some scrap wood?
-9. Put the back panel on with wood screws, or use M2.5 machine screws in the provided holes.
-10. Put keycaps on the keyswitches.
+1. Software setup:
+    1. Install the Arduino IDE and set it up as described below.
+    1. Flash software to the microcontroller before you do anything else, just to make sure you can.  You won't be able to test it though.
+1. Case:
+    1. Laser-cut case layers from plywood.
+    1. Align plywood layers, test-fitting keyswitches to ensure precise alignment.  (The keyswitches will not clip in securely; we glue them in a later step.)
+    1. Glue all plywood layers except the back panel.
+    1. Sand and finish the plywood.  Round off the edges of the handle to make it more comfortable to hold and to remove the burned part.
+1. Assembly:
+    1. Glue in the keyswitches, being carful not to get glue on the metal contacts.
+    1. Put in the joystick and microcontroller and affix them somehow.
+    1. Soldering time.
+1. Testing:
+    1. Test device functionality, press buttons, connect to MIDI software and see if it works.  Try using a "midi spy" program like Midi Monitor to observe the MIDI events it's sending.
+1. Final packaging:
+    1. Add more supports around the back of the joystick and microcontroller to hold them steady in their little caves when squeezed by the back panel.  Maybe glue some scrap wood?
+    1. Also add some scrap wood to hold the USB port tight when the back cover is on.  The USB port tends to get ripped out when the cable is yanked.  Some superglue might help here if you're careful.
+    1. Put the back panel on with wood screws, or use M2.5 machine screws in the provided holes.  You might need to open it again later.
+    1. Put keycaps on the keyswitches.
 
 ## Arduino setup
 
-1. Install the official Arduino IDE.
-2. Install the Adafruit board profiles using [instructions from Adafruit](https://learn.adafruit.com/adafruit-feather-32u4-basic-proto/arduino-ide-setup).  Specifically, the Adafruit board manager URL to add is `https://adafruit.github.io/arduino-board-index/package_adafruit_index.json`
+1. Install the official [Arduino IDE](https://www.arduino.cc/en/software).  The "hourly build" is free, the others cost money.
+2. In the Arduino IDE, install the Adafruit board profiles using [instructions from Adafruit](https://learn.adafruit.com/adafruit-feather-32u4-basic-proto/arduino-ide-setup).  Specifically, the Adafruit board manager URL to add is `https://adafruit.github.io/arduino-board-index/package_adafruit_index.json`
 3. Set board: Adafruit Feather 32u4 basic proto
 4. Add libraries: MIDIUSB
 
-The arduino code is in `thumble_001_arduino`.  You do not need to press the reset button on the board when flashing it.
+Open the arduino code in `thumble_001_arduino`.  Hit the checkmark button to see if it compiles with no problems.
+
+To send the code to the board, press the button with the right arrow.  You do not need to press the reset button on the board when flashing it.
+
+## The firmware code
 
 This code will turn the microcontroller into a USB MIDI input device, like a piano keyboard, that can be used with any other hardware (ipad, laptop, etc).
 
+This is not based on any existing mechanical keyboard firmware because it's fairly simple.
+
 ## Soldering
 
-We can wire each key directly between GND and an input pin, since we don't have many keys.  (Otherwise in a bigger keyboard we'd build a key matrix using diodes.
+We can wire each key directly between GND and an input pin, since we don't have many keys.  (Otherwise in a bigger keyboard we'd build a key matrix using diodes.)
 
 For simplicity, a few GND wires can run along tracks in the case and connect to every key.  Then attach a signal wire from each key to a unique pin on the microcontroller.
 
-The joystick uses up two analog inputs.
+We use 15 digital input pins for keys.
+
+The joystick uses up two analog inputs and needs a ground and 3v wire too.
 
 Wiring diagram ([click to enlarge](https://raw.githubusercontent.com/cinnamon-bun/thumble/main/final_v006-wiring.png)):
 
 ![](final_v006-wiring.png)
+
+You can adjust the key-to-pin assignments in the code if you soldered things a bit differently.  Look for the `#define KEY00_PIN` lines around line 90.
