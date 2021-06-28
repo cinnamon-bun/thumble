@@ -7,7 +7,7 @@
 
 
 //------------------------------------------------------
-// UTILS
+// MATH UTILS
 
 float signFloat(float x) {
     if (x > 0.0) { return 1.0; }
@@ -54,6 +54,8 @@ void allNotesOff(byte channel) {
 //------------------------------------------------------
 // KEYBOARD MEDIA KEYS
 
+// TODO: test this
+
 void volumeMute() {
     Keyboard.press(KEY_LEFT_CTRL);
     Keyboard.press(KEY_F10);
@@ -82,26 +84,46 @@ void volumeUp() {
 //------------------------------------------------------
 // KEY AND PIN SETUP
 
+// I've given "key numbers" to each key which are different
+// than the pin numbers.
+//
+//  KEY NUMBERS
+//
+//   00           12    13           11
+//    01  02         14         09  10
+//         03  04          07  08
+//              05        06
+//
+// Current special behaviors:
+//   12 and 13 are multimedia volume keys
+//   14 is SHIFT
+//   SHIFT + 00 (SHIFT + B) toggles between MIDI channel 0 and 1.
+//   SHIFT + a white key tranposes the keyboard to different octaves.
+//      F (06) gets you the default octave.
+//
+//   This is all implemented in the onKeyDown() function.
+//
+
 #define NUM_KEYS 15
 
-//  my number - arduino number - meaning
-//  (my number is midi offset from b-below-middle-c)
-#define KEY00_PIN 18  // B
-#define KEY01_PIN 19  // C
-#define KEY02_PIN 20  // c#
-#define KEY03_PIN 21  // D
-#define KEY04_PIN 22  // d#
+//  my key number - arduino number - meaning
+//  (my key number is in midi order)
+#define KEY00_PIN  1  // B   // right side
+#define KEY01_PIN 14  // C
+#define KEY02_PIN  0  // c#
+#define KEY03_PIN 16  // D
+#define KEY04_PIN 15  // d#
 #define KEY05_PIN 23  // E
-#define KEY06_PIN 15  // F
-#define KEY07_PIN 16  // f#
-#define KEY08_PIN 14  // G
-#define KEY09_PIN  0  // g#
-#define KEY10_PIN  1  // A
+#define KEY06_PIN  3  // F   // left side
+#define KEY07_PIN  5  // f#
+#define KEY08_PIN  9  // G
+#define KEY09_PIN 10  // g#
+#define KEY10_PIN 11  // A
 #define KEY11_PIN 12  // a#
 
-#define KEY12_PIN 11  // L
-#define KEY13_PIN  5  // shift
-#define KEY14_PIN  3  // R 
+#define KEY12_PIN 22  // S (L)   // center keys
+#define KEY13_PIN 20  // T (R)
+#define KEY14_PIN 21  // U (SHIFT)
 
 #define JOY_X_ANALOG_PIN A10  // joystick x axis (arduino pin 10)
 #define JOY_Y_ANALOG_PIN  A9  // joystick y axis (arduino pin 9)
@@ -112,7 +134,7 @@ void volumeUp() {
 // 6 -- can be used for neopixels
 // 2
 
-// note name to key number
+// note name to key number (not pin number)
 #define B_KEY   0
 #define C_KEY   1
 #define CS_KEY  2
@@ -126,9 +148,9 @@ void volumeUp() {
 #define A_KEY  10
 #define AS_KEY 11
 
-#define L_KEY     12   
-#define SHIFT_KEY 13   // as a key-number, not a pin number
-#define R_KEY     14   
+#define L_KEY     12   // S
+#define R_KEY     13   // T
+#define SHIFT_KEY 14   // U
 
 // key number to pin number
 int keyToPin[NUM_KEYS] = {
@@ -145,26 +167,32 @@ int keyToPin[NUM_KEYS] = {
     KEY10_PIN,  // A
     KEY11_PIN,  // a#
 
-    KEY12_PIN,  // ?
-    KEY13_PIN,  // shift
-    KEY14_PIN,  // ??
+    KEY12_PIN,  // S (L)
+    KEY13_PIN,  // T (R)
+    KEY14_PIN,  // U (SHIFT)
 };
 
 //------------------------------------------------------
 // STATE
 
-#define KEY_COOLDOWN 1000  // for debouncing.  max 32000
-#define READ_JOY_EVERY 200  // to save time on analog reads.
+// debounce keyswitches.  max 32000.
+// when a keyswitch changes state, ignore it for this many ticks
+// before trying to read it again.
+#define KEY_COOLDOWN 1000
+
+// do analog read of joystick every N ticks, because it's slow
+// and we don't want to spam MIDI pitchbend signals too fast
+#define READ_JOY_EVERY 100
 
 // keys: arrays for debouncing & state tracking
 bool keyIsDown[NUM_KEYS];
 bool keyWasDown[NUM_KEYS];
-int coolDown[NUM_KEYS];
+int coolDown[NUM_KEYS];  // ticks until next read, if recently changed (for debouncing)
 
 // midi
 int baseTranspose = 60;  // what midi note the C key should play
 int octaveTranspose = 0; // also shift this much (multiples of 12, like -24)
-byte midiChannel = 0;
+byte midiChannel = 0;  // this can be toggled between 0 and 1
 
 byte keyToMidiNote(int key) {
     // key 0 is B-below-middleC, midi 59
@@ -181,10 +209,10 @@ byte keyToMidiNote(int key) {
 // range is stretched to fill that space.
 float joyX = 0.0;
 float joyY = 0.0;
-float joyDeadzone = 0.1;
-float joyMax = 0.8;
+float joyDeadzone = 0.1;  // between +/- this value, the joystick can move with no effect
+float joyMax = 0.8;  // past +/- this value, the joystick is maxed out and has no further effect
 
-int joyCooldown = 0;
+int joyCooldown = 0;  // keep track of how long until next joystick read (see READ_JOY_EVERY)
 
 #define DIR_NONE 0
 #define DIR_N  1
@@ -194,7 +222,7 @@ int joyCooldown = 0;
 byte joyDirection = DIR_NONE;
 
 float computeJoyAxis(int rawJoy) {
-    // rawJoy is 0 to 1023
+    // rawJoy is the analog value of the X or Y axis, 0 to 1023
     // output is a float with dead zone and outer max zone removed, scaled to -1 to 1
     float joy = remapFloat((float)rawJoy, 0.0, 1023.0, -1.0, 1.0, true);
     float sg = signFloat(joy);
@@ -222,14 +250,18 @@ byte getJoyDirection(float joyX, float joyY) {
 
 void setup() {
     pinMode(LED_PIN, OUTPUT);
+
+    // keyswitch pins: input
     for (int ii = 0; ii < NUM_KEYS; ii++) {
         pinMode(keyToPin[ii], INPUT);
         keyIsDown[ii] = false;
         keyWasDown[ii] = false;
         coolDown[ii] = 0;
     }
+
     // don't need to set up the analog input pins
 
+    // get ready to send multimedia volume keys
     Keyboard.begin();
 }
 
@@ -237,6 +269,7 @@ void setup() {
 // MAIN
 
 void loop() {
+    // send MIDI data over USB, if there is anything queued up
     MidiUSB.flush();
 
     // read joystick every so often
@@ -249,6 +282,9 @@ void loop() {
         //joyX = ((float)analogRead(JOY_X_ANALOG_PIN) / 1023.0 - 0.5) * 2.0;
         //joyY = ((float)analogRead(JOY_Y_ANALOG_PIN) / 1023.0 - 0.5) * 2.0;
         joyCooldown = READ_JOY_EVERY;
+
+        // TODO: handle joystick motion, make pitch bends
+
     }
 
     // read keys
@@ -282,7 +318,9 @@ void loop() {
         }
     }
 
-    // blink LED
+    // blink LED for testing and send some midi notes.
+    // this is incompatible with the rest of the code
+    // because of the delay() calls
     //digitalWrite(13, HIGH);
     //MidiUSB.flush();
     //noteOn(0, 60, 100);
@@ -292,35 +330,45 @@ void loop() {
     //delay(2000);
 }
 
-
 //------------------------------------------------------
 // KEY HANDLERS
 
 void onKeyDown(int key) {
     if (keyIsDown[SHIFT_KEY]) {
-        if (key == B_KEY) { midiChannel = 1 - midiChannel; }  // toggle midi channel between 0 and 1
+        // special shift key behaviors
+
+        // B key toggles MIDI channel between 0 and 1
+        if (key == B_KEY) {
+            allNotesOff(midiChannel);  // don't leave dangling notes in the old channel
+            midiChannel = 1 - midiChannel;
+        }
+
+        // other white keys transpose by octaves
         if (key == C_KEY) { octaveTranspose = -36; }
         if (key == D_KEY) { octaveTranspose = -24; }
         if (key == E_KEY) { octaveTranspose = -12; }
-        if (key == F_KEY) { octaveTranspose =  0; }
+        if (key == F_KEY) { octaveTranspose =  0; }  // default transpose
         if (key == G_KEY) { octaveTranspose =  12; }
         if (key == A_KEY) { octaveTranspose =  24; }
     } else {
         if (key >= 0 && key <= 11) {
-            // midi keys
+            // midi keys send notes
+            // TODO: shepard tones
             noteOn(midiChannel, keyToMidiNote(key), 100);
         } else if (key == L_KEY) {
+            // multimedia volume keys
             volumeDown();
         } else if (key == SHIFT_KEY) {
-            // shift key pressed; do nothing
+            // shift key pressed; do nothing here
         } else if (key == R_KEY) {
+            // multimedia volume keys
             volumeUp();
         }
     }
 }
 void onKeyUp(int key) {
     if (key >= 0 && key <= 11) {
-        // midi keys
+        // midi keys end their notes
         noteOff(midiChannel, keyToMidiNote(key), 100);
     }
 }

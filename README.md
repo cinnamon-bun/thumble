@@ -8,17 +8,42 @@ A MIDI controller in the shape of a video game controller (e.g. xbox), but using
 
 Hold it like an Xbox controller.  Play it like a kalimba, with your thumbs.
 
-The diagonal keys are notes; the 3 keys in the middle are extra function keys.  The joystick is for pitch bends, etc.
+The diagonal keys are notes; the 3 keys in the middle are extra function keys.  The joystick is for pitch bends.
+
+### Musical notes
 
 Unlike a kalimba, the notes are arranged piano style.  There's one octave starting at B on the left and ascending to Bb on the right.  Like a piano, white keys are on the bottom row and black keys are on the top row (except for B).
 
-The special middle keys P, Q, and R have not been assigned to functions yet.  One will be a Shift key which accesses hidden features in the other keys such as transposing, changing MIDI channels, changing system volume, etc.  TODO.
+Because we use Shepard Tones (more below), you can play a melody so that it wraps off one side of the keyboard and back onto the other side, without noticing a jump in octaves.
+
+### Special keys
+
+The middle keys S, T, and U are for special purposes.  Currently:
+
+* S is volume down (like a multimedia keyboard -- controlling the computer volume)
+* T is volume up
+* U is a SHIFT key
+    * SHIFT - B toggles between MIDI channel 0 and 1
+    * SHIFT + a white key tranposes the keyboard to different octaves.  F gets you the default octave.
+
+...but check the [source code](https://github.com/cinnamon-bun/thumble/blob/main/thumble_001_arduino/thumble_001_arduino.ino#L97-L102) for the latest changes to the special keys.
+
+The middle keys could possibly do other things like:
+* play specific MIDI pitches where drum sounds can be set up, that would ignore the transpose settings and pitch bends.
+
+### Joystick
+
+The joystick is not programmed yet (TODO), but it will do pitch bends.  Left/right will bend by a half step, and up/down will bend by a whole step.
+
+It could also act as a mod wheel on one axis and a pitch bend on the other axis.
 
 ## Shepard Tones
 
 There's only room for 12 notes, but wouldn't it be nice if you could wrap around the edge when playing a melody without jumping an octave?
 
 We use an auditory illusion called [Shepard Tones](https://en.wikipedia.org/wiki/Shepard_tone) to make this possible.  Each key actually plays several octaves of that note at the same time, but with louder notes in the middle octaves, to maintain the loudest note in the same octave despite the illusion of constantly ascending tones.
+
+As you go up, the higher octaves fade away and the lower octaves fade in to take their place, until you wrap around seamlessly.
 
 For example:
 * C plays C1 at 50% and C2 at 50% volume.
