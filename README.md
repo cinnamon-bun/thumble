@@ -65,25 +65,23 @@ The joystick and microcontroller are also a bit loose in the case; you'll have t
 
 ## Arduino setup
 
-Install the official Arduino IDE.
+1. Install the official Arduino IDE.
+2. Install the Adafruit board profiles using [instructions from Adafruit](https://learn.adafruit.com/adafruit-feather-32u4-basic-proto/arduino-ide-setup).  Specifically, the Adafruit board manager URL to add is `https://adafruit.github.io/arduino-board-index/package_adafruit_index.json`
+3. Set board: Adafruit Feather 32u4 basic proto
+4. Add libraries: MIDIUSB
 
-Install the Adafruit board profiles using instructions from Adafruit.
+The arduino code is in `thumble_001_arduino`.  You do not need to press the reset button on the board when flashing it.
 
-Set board: Adafruit Feather 32u4 basic proto
-
-Add libraries: MIDIUSB
-
-The arduino code is in `thumble_001_arduino`.  You can flash it to the board without pressing the reset button.  This code will turn the microcontroller into a USB MIDI input device, like a piano keyboard, that can be used with any other hardware (ipad, laptop, etc).
+This code will turn the microcontroller into a USB MIDI input device, like a piano keyboard, that can be used with any other hardware (ipad, laptop, etc).
 
 ## Soldering
 
-We don't have many keys here so we don't need a key matrix or any diodes.  We can wire each key directly between GND and an input pin.
+We can wire each key directly between GND and an input pin, since we don't have many keys.  (Otherwise in a bigger keyboard we'd build a key matrix using diodes.
 
 For simplicity, a few GND wires can run along tracks in the case and connect to every key.  Then attach a signal wire from each key to a unique pin on the microcontroller.
 
 The joystick uses up two analog inputs.
 
-TODO: wiring diagram
+Wiring diagram (click to enlarge):
 
-
-
+![](final_v006-wiring.png)
