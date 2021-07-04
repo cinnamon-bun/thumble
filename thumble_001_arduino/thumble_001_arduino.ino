@@ -296,7 +296,8 @@ void loop() {
         } else {
             // record new state.
             keyWasDown[ii] = keyIsDown[ii];
-            keyIsDown[ii] = digitalRead(keyToPin[ii]);
+            // we have pull-ups on the input pins, so they will read LOW when pressed and HIGH otherwise.
+            keyIsDown[ii] = ! digitalRead(keyToPin[ii]);
         }
     }
 
