@@ -253,7 +253,7 @@ void setup() {
 
     // keyswitch pins: input
     for (int ii = 0; ii < NUM_KEYS; ii++) {
-        pinMode(keyToPin[ii], INPUT);
+        pinMode(keyToPin[ii], INPUT_PULLUP);
         keyIsDown[ii] = false;
         keyWasDown[ii] = false;
         coolDown[ii] = 0;
