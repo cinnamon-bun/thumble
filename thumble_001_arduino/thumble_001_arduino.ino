@@ -298,6 +298,7 @@ void loop() {
             keyWasDown[ii] = keyIsDown[ii];
             // we have pull-ups on the input pins, so they will read LOW when pressed and HIGH otherwise.
             keyIsDown[ii] = ! digitalRead(keyToPin[ii]);
+            coolDown[ii] = KEY_COOLDOWN;
         }
     }
 
@@ -310,10 +311,8 @@ void loop() {
         // when a key is pressed, send event and restart the cooldown timer
         if (keyWasDown[ii] && ! keyIsDown[ii]) {
             onKeyUp(ii);
-            coolDown[ii] = KEY_COOLDOWN;
         } else if (! keyWasDown[ii] && keyIsDown[ii]) {
             onKeyDown(ii);
-            coolDown[ii] = KEY_COOLDOWN;
         } else if (keyIsDown[ii]) {
             onKeyStillDown(ii);
         }
