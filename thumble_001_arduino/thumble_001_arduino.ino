@@ -178,11 +178,11 @@ int keyToPin[NUM_KEYS] = {
 // debounce keyswitches.  max 32000.
 // when a keyswitch changes state, ignore it for this many ticks
 // before trying to read it again.
-#define KEY_COOLDOWN 1000
+#define KEY_COOLDOWN 3
 
 // do analog read of joystick every N ticks, because it's slow
 // and we don't want to spam MIDI pitchbend signals too fast
-#define READ_JOY_EVERY 100
+#define READ_JOY_EVERY 1000
 
 // keys: arrays for debouncing & state tracking
 bool keyIsDown[NUM_KEYS];
