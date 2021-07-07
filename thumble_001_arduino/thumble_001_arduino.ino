@@ -253,7 +253,7 @@ void setup() {
 
     // keyswitch pins: input
     for (int ii = 0; ii < NUM_KEYS; ii++) {
-        pinMode(keyToPin[ii], INPUT);
+        pinMode(keyToPin[ii], INPUT_PULLUP);
         keyIsDown[ii] = false;
         keyWasDown[ii] = false;
         coolDown[ii] = 0;
@@ -296,7 +296,9 @@ void loop() {
         } else {
             // record new state.
             keyWasDown[ii] = keyIsDown[ii];
-            keyIsDown[ii] = digitalRead(keyToPin[ii]);
+            // we have pull-ups on the input pins, so they will read LOW when pressed and HIGH otherwise.
+            keyIsDown[ii] = ! digitalRead(keyToPin[ii]);
+            coolDown[ii] = KEY_COOLDOWN;
         }
     }
 
@@ -309,10 +311,8 @@ void loop() {
         // when a key is pressed, send event and restart the cooldown timer
         if (keyWasDown[ii] && ! keyIsDown[ii]) {
             onKeyUp(ii);
-            coolDown[ii] = KEY_COOLDOWN;
         } else if (! keyWasDown[ii] && keyIsDown[ii]) {
             onKeyDown(ii);
-            coolDown[ii] = KEY_COOLDOWN;
         } else if (keyIsDown[ii]) {
             onKeyStillDown(ii);
         }
