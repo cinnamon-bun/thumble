@@ -19,6 +19,7 @@
   - [Laser cutting](#laser-cutting)
   - [Case Assembly](#case-assembly)
   - [Electronics](#electronics)
+- [Lessons learned](#lessons-learned)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
