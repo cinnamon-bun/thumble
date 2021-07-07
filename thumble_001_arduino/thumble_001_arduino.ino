@@ -108,17 +108,17 @@ void volumeUp() {
 
 //  my key number - arduino number - meaning
 //  (my key number is in midi order)
-#define KEY00_PIN  1  // B   // right side
+#define KEY00_PIN  1  // B   // right side (as seen from back)
 #define KEY01_PIN 14  // C
 #define KEY02_PIN  0  // c#
 #define KEY03_PIN 16  // D
 #define KEY04_PIN 15  // d#
 #define KEY05_PIN 23  // E
-#define KEY06_PIN  3  // F   // left side
+#define KEY06_PIN  3  // F   // left side (as seen from back)
 #define KEY07_PIN  5  // f#
 #define KEY08_PIN  9  // G
-#define KEY09_PIN 10  // g#
-#define KEY10_PIN 11  // A
+#define KEY09_PIN 11  // g#
+#define KEY10_PIN 10  // A
 #define KEY11_PIN 12  // a#
 
 #define KEY12_PIN 22  // S (L)   // center keys
