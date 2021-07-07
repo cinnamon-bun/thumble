@@ -187,7 +187,9 @@ int keyToPin[NUM_KEYS] = {
 // keys: arrays for debouncing & state tracking
 bool keyIsDown[NUM_KEYS];
 bool keyWasDown[NUM_KEYS];
-int coolDown[NUM_KEYS];  // ticks until next read, if recently changed (for debouncing)
+// ticks until next read is allowed, if recently changed (for debouncing).
+// if zero, the key can be read.  does not go below zero.
+int keyCooldown[NUM_KEYS];
 
 // midi
 int baseTranspose = 60;  // what midi note the C key should play
@@ -256,7 +258,7 @@ void setup() {
         pinMode(keyToPin[ii], INPUT_PULLUP);
         keyIsDown[ii] = false;
         keyWasDown[ii] = false;
-        coolDown[ii] = 0;
+        keyCooldown[ii] = 0;  // keys all start in ready state
     }
 
     // don't need to set up the analog input pins
@@ -287,28 +289,29 @@ void loop() {
 
     }
 
-    // read keys
+    // read keys into the key state arrays
     for (int ii = 0; ii < NUM_KEYS; ii++) {
-        if (coolDown[ii] > 0) {
+        if (keyCooldown[ii] > 0) {
             // completely ignore a key until it's cooled down.
-            // apply cooldown here.
-            coolDown[ii] -= 1;
+            // decrement cooldown here.
+            keyCooldown[ii] -= 1;
         } else {
             // record new state.
-            keyWasDown[ii] = keyIsDown[ii];
             // we have pull-ups on the input pins, so they will read LOW when pressed and HIGH otherwise.
+            keyWasDown[ii] = keyIsDown[ii];
             keyIsDown[ii] = ! digitalRead(keyToPin[ii]);
-            coolDown[ii] = KEY_COOLDOWN;
+            // restart the cooldown timer
+            keyCooldown[ii] = KEY_COOLDOWN;
         }
     }
 
-    // react to key events
+    // react to key events in the key state arrays
     for (int ii = 0; ii < NUM_KEYS; ii++) {
         // ignore keys that are not cooled down
-        if (coolDown[ii] != 0) {
+        if (keyCooldown[ii] != 0) {
             continue;
         }
-        // when a key is pressed, send event and restart the cooldown timer
+        // when a key is pressed, send event
         if (keyWasDown[ii] && ! keyIsDown[ii]) {
             onKeyUp(ii);
         } else if (! keyWasDown[ii] && keyIsDown[ii]) {
@@ -337,20 +340,41 @@ void onKeyDown(int key) {
     if (keyIsDown[SHIFT_KEY]) {
         // special shift key behaviors
 
-        // B key toggles MIDI channel between 0 and 1
+        // shift-B toggles MIDI channel between 0 and 1
         if (key == B_KEY) {
             allNotesOff(midiChannel);  // don't leave dangling notes in the old channel
             midiChannel = 1 - midiChannel;
         }
 
         // other white keys transpose by octaves
-        if (key == C_KEY) { octaveTranspose = -36; }
-        if (key == D_KEY) { octaveTranspose = -24; }
-        if (key == E_KEY) { octaveTranspose = -12; }
-        if (key == F_KEY) { octaveTranspose =  0; }  // default transpose
-        if (key == G_KEY) { octaveTranspose =  12; }
-        if (key == A_KEY) { octaveTranspose =  24; }
+        if (key == C_KEY) {
+            allNotesOff(midiChannel);  // don't leave dangling notes
+            octaveTranspose = -36;
+        }
+        if (key == D_KEY) {
+            allNotesOff(midiChannel);  // don't leave dangling notes
+            octaveTranspose = -24;
+        }
+        if (key == E_KEY) {
+            allNotesOff(midiChannel);  // don't leave dangling notes
+            octaveTranspose = -12;
+        }
+        if (key == F_KEY) {
+            // default transpose
+            allNotesOff(midiChannel);  // don't leave dangling notes
+            octaveTranspose =  0;
+        }
+        if (key == G_KEY) {
+            allNotesOff(midiChannel);  // don't leave dangling notes
+            octaveTranspose =  12;
+        }
+        if (key == A_KEY) {
+            allNotesOff(midiChannel);  // don't leave dangling notes
+            octaveTranspose =  24;
+        }
     } else {
+        // regular key behavior without the shift key
+
         if (key >= 0 && key <= 11) {
             // midi keys send notes
             // TODO: shepard tones
@@ -358,19 +382,23 @@ void onKeyDown(int key) {
         } else if (key == L_KEY) {
             // multimedia volume keys
             volumeDown();
-        } else if (key == SHIFT_KEY) {
-            // shift key pressed; do nothing here
         } else if (key == R_KEY) {
             // multimedia volume keys
             volumeUp();
+        } else if (key == SHIFT_KEY) {
+            // shift key pressed; do nothing here
         }
     }
 }
 void onKeyUp(int key) {
-    if (key >= 0 && key <= 11) {
-        // midi keys end their notes
+    // most keys don't have key-up behaviors, only the midi keys do
+
+    if (key >= 0 && key <= 11 && !keyIsDown[SHIFT_KEY]) {
+        // midi keys end their notes when released
         noteOff(midiChannel, keyToMidiNote(key), 100);
     }
 }
+
 void onKeyStillDown(int key) {
 }
+
