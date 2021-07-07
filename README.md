@@ -26,6 +26,8 @@
 
 ![](beautyshot.png)
 
+![](build_photos/photo_2021-07-07_08-24-30.jpg)
+
 A MIDI controller in the shape of a video game controller (e.g. xbox), but using mechanical-keyboard buttons.
 
 ## How it's designed musically; how to play it
