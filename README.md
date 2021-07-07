@@ -226,3 +226,21 @@ Keycap layout
 
 Finished!
 ![](build_photos/photo_2021-07-07_08-24-30.jpg)
+
+# Lessons learned
+
+Layer cut plywood layers make a great case, although a bit heavy.
+
+This instrument was designed as a follow-up to the [Waffletone](https://github.com/cinnamon-bun/waffletone), but it differes in several ways:
+* You play with your thumbs, not fingers, and thumbs are stronger and more clumsy
+* There's a lot more large thumb motion between keys, while the Waffletone tends to leave fingers on the same keys and make smaller motions.
+
+So...
+* The keyswitches need to be stiffer than I expected - you're using your thumbs, not fingers, and it's too easy to hit the wrong key accidentally.  Possibly even a tactile key, which I normally dislike.
+* Since you don't play chords, you don't need to have a lot of key travel to help you synchronize your notes starting at the same instant.  Maybe low profile keys like Kailh Chocs would work better.
+* Maybe the front keys could be lower profile than the back keys
+* Put a bit more space between keyswitches to avoid accidental keypresses
+* Add an extra top plate to make the keyswitches not so tall
+* Add extra bottom plate pieces on the handles as grips for the fingers
+* Remember to leave space for a USB cable :)
+* Figure out how to solve the USB requested power draw issue so it works on iOS devices
