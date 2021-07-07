@@ -63,6 +63,7 @@ For example:
 1. Keycaps (x 15)
     * I used these [XDA profile](https://www.amazon.com/gp/product/B092H93KP6/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1) keycaps because they're pretty flat on top so it's easy to slide your thumbs around
 1. This [joystick](https://www.adafruit.com/product/245) from Adafruit
+1. [Magnetic USB cables](https://www.amazon.com/gp/product/B07GWLF4GR/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1) to avoid strain on the USB port.
 1. Some wires
 1. Soldering equipment
 
@@ -138,3 +139,64 @@ Wiring diagram ([click to enlarge](https://raw.githubusercontent.com/cinnamon-bu
 ![](final_v006-wiring.png)
 
 You can adjust the key-to-pin assignments in the code if you soldered things a bit differently.  Look for the `#define KEY00_PIN` lines around line 90.
+
+# Build photos
+
+## Laser cutting
+
+Laser cutting the case layers from 1/8 inch plywood
+![](build_photos/PXL_20210626_213331578.jpg)
+
+## Case Assembly
+
+Gluing the case layers
+![](build_photos/PXL_20210628_180228637.jpg)
+
+Test fitting the switches for layer alignment
+![](build_photos/PXL_20210628_180246104.jpg)
+
+Gluing
+![](build_photos/PXL_20210628_180300707.jpg)
+
+We used TiteBondIII Ultimate Wood Glue
+![](build_photos/PXL_20210628_180313621.jpg)
+
+Clamping & gluing
+![](build_photos/messages_0(12).jpeg)
+![](build_photos/messages_0(13).jpeg)
+
+The layer stack showing the USB area
+![](build_photos/messages_0(11).jpeg)
+
+Counterset Torx screws to hold the back over
+![](build_photos/messages_0(10).jpeg)
+![](build_photos/messages_0(8).jpeg)
+
+Sanding round edges
+![](build_photos/messages_0(1).jpeg)
+![](build_photos/messages_0(2).jpeg)
+![](build_photos/messages_0(3).jpeg)
+
+## Electronics
+
+Fitting the electronics.  We had to cut off a corner of the case to make room for the USB cord.
+![](build_photos/messages_0(5).jpeg)
+![](build_photos/messages_0(6).jpeg)
+
+Improvised way to hold the Feather board steady
+![](build_photos/messages_0(7).jpeg)
+
+Final case assembly
+![](build_photos/messages_0.jpeg)
+![](build_photos/photo_2021-07-07_08-25-05.jpg)
+
+Soldering
+![](build_photos/photo_2021-07-07_08-24-45.jpg)
+
+Keycap layout
+![](build_photos/PXL_20210628_162834118.jpg)
+
+(Not pictured: flashing the firmware.)
+
+Finished!
+![](build_photos/photo_2021-07-07_08-24-30.jpg)
