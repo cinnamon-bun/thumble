@@ -163,6 +163,8 @@ The joystick uses up two analog inputs and needs a ground and 3v wire too.
 
 Wiring diagram ([click to enlarge](https://raw.githubusercontent.com/cinnamon-bun/thumble/main/final_v006-wiring.png)):
 
+**ERRATA** The joystick board is horizontally flipped in this diagram, but it might not actually matter because the board might be symmetrical.  Double-check.
+
 ![](final_v006-wiring.png)
 
 You can adjust the key-to-pin assignments in the code if you soldered things a bit differently.  Look for the `#define KEY00_PIN` lines around line 90.
@@ -217,7 +219,8 @@ Final case assembly
 ![](build_photos/messages_0.jpeg)
 ![](build_photos/photo_2021-07-07_08-25-05.jpg)
 
-Soldering
+Soldering and gluing in the PCBs.
+We used 2-part epoxy to hold the keyswitches to the wood.  The PCBs are held in with hot glue and blocks of wood that press them against the back cover for stability.
 ![](build_photos/photo_2021-07-07_08-24-45.jpg)
 
 Keycap layout
