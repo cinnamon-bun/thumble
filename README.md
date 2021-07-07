@@ -1,3 +1,27 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Contents**
+
+- [Thumble](#thumble)
+  - [How it's designed musically; how to play it](#how-its-designed-musically-how-to-play-it)
+    - [Musical notes](#musical-notes)
+    - [Special keys](#special-keys)
+    - [Joystick](#joystick)
+  - [Shepard Tones](#shepard-tones)
+  - [Hardware](#hardware)
+    - [Alternative hardware](#alternative-hardware)
+  - [Case](#case)
+  - [Assembly sequence](#assembly-sequence)
+  - [Arduino setup](#arduino-setup)
+  - [The firmware code](#the-firmware-code)
+  - [Soldering](#soldering)
+- [Build photos](#build-photos)
+  - [Laser cutting](#laser-cutting)
+  - [Case Assembly](#case-assembly)
+  - [Electronics](#electronics)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Thumble
 
 ![](beautyshot.png)
