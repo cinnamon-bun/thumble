@@ -21,6 +21,7 @@
   - [Case Assembly](#case-assembly)
   - [Electronics](#electronics)
 - [Lessons learned](#lessons-learned)
+- [Appendix: MIDI synth apps to turn MIDI into sound](#appendix-midi-synth-apps-to-turn-midi-into-sound)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
