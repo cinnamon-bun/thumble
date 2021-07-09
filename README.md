@@ -177,10 +177,9 @@ So my cable setup is: Thumble --> usb-C to usb A cable --> Apple camera adaptor 
 If you don't have an iOS device and you need a portable hardware synth to turn your MIDI into sounds, the [iPod Touch](https://www.apple.com/ipod-touch/) is not a bad option.  It's $200, can run most iOS music apps and synths, battery powered, small, has (tiny) speakers and headphone output.  One could be mounted to a Thumble somehow.
 This is what I use when I'm not at my computer.
 
-See below for app recommendations.
+See the Appendix below for app recommendations.
 
 P.S. I'd love to hear any other options for portable battery-powered MIDI synths with audio out, I don't want to support Apple specifically.
-
 
 ## Soldering
 
@@ -291,14 +290,15 @@ Open source, multi platform
 * [Ardour](https://ardour.org/)
 * SunVox (ideosyncratic)
 
+Android
+* No good ones that I know of, the latency is too high
+
 iOS
 * Garage Band
 * Thumbjam
 
-Android
-* No good ones that I know of, the latency is too high
-
 Hardware (advanced)
+* An iOS device with one of the above apps.  The iPod Touch is small and works well
 * [Adafruit Music Maker FeatherWing](https://www.adafruit.com/product/3357) - a low quality midi synth on a little board
 * [Axoloti](http://www.axoloti.com/) - higher quality, runs a PureData or Max/MSP style patch
 * A Raspberry Pi with I don't know what software
