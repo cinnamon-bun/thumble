@@ -170,9 +170,9 @@ Re-flash the board.  Now it will work when plugged into a iOS device via somethi
 
 There's also a version of that adaptor that has an extra lightning power input for wall power -- using that and plugging in wall power at the same time will probably bypass the USB power warning but creates a mess of cables.
 
-I haven't tried this on any USB-C equipped iOS devices.
-
 So my cable setup is: Thumble --> usb-C to usb A cable --> Apple camera adaptor to lightning plug --> iPod Touch
+
+(I haven't tried this on any USB-C equipped iOS devices, only through the USB-A to lightning dongle.  Maybe things just work on USB-C iOS devices.)
 
 If you don't have an iOS device and you need a portable hardware synth to turn your MIDI into sounds, the [iPod Touch](https://www.apple.com/ipod-touch/) is not a bad option.  It's $200, can run most iOS music apps and synths, battery powered, small, has (tiny) speakers and headphone output.  One could be mounted to a Thumble somehow.
 This is what I use when I'm not at my computer.
