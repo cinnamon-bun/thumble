@@ -96,6 +96,7 @@ For example:
 1. [Magnetic USB cables](https://www.amazon.com/gp/product/B07GWLF4GR/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1) to avoid strain on the USB port.
 1. Some wires
 1. Soldering equipment
+1. An app or hardware that accepts MIDI over USB and produces sound (see the Appendix at the end of this file.)
 
 ### Alternative hardware
 
@@ -295,7 +296,7 @@ Android
 
 iOS
 * Garage Band
-* Thumbjam
+* Thumbjam works great and has a library of sounds to download
 
 Hardware (advanced)
 * An iOS device with one of the above apps.  The iPod Touch is small and works well
