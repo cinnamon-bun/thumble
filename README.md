@@ -32,6 +32,8 @@
 
 A MIDI controller in the shape of a video game controller (e.g. xbox), but using mechanical-keyboard buttons.
 
+Like some MIDI keyboards, it doesn't make actual sound, it only sends digital notes over USB to a computer or synthesizer.
+
 ## How it's designed musically; how to play it
 
 Hold it like an Xbox controller.  Play it like a kalimba, with your thumbs.
