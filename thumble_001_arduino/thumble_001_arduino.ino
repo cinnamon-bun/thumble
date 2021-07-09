@@ -5,6 +5,9 @@
 // https://learn.adafruit.com/adafruit-feather-32u4-bluefruit-le?view=all
 // https://github.com/rkistner/arcore
 
+// See README for how to fix power draw issues with OS devices --
+// you have to hack a file in the Arduino IDE to reduce the
+// requested USB power.
 
 //------------------------------------------------------
 // MATH UTILS

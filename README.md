@@ -12,8 +12,9 @@
     - [Alternative hardware](#alternative-hardware)
   - [Case](#case)
   - [Assembly sequence](#assembly-sequence)
-  - [Arduino setup](#arduino-setup)
   - [The firmware code](#the-firmware-code)
+  - [Arduino setup and flashing the board](#arduino-setup-and-flashing-the-board)
+  - [Aside: solving "The connected device requires too much power" on iOS devices](#aside-solving-the-connected-device-requires-too-much-power-on-ios-devices)
   - [Soldering](#soldering)
 - [Build photos](#build-photos)
   - [Laser cutting](#laser-cutting)
@@ -134,7 +135,13 @@ The top layer SVG is flipped so that the laser smoke marks end up inside the cas
     1. Put the back panel on with wood screws, or use M2.5 machine screws in the provided holes.  You might need to open it again later.
     1. Put keycaps on the keyswitches.
 
-## Arduino setup
+## The firmware code
+
+This code will turn the microcontroller into a USB MIDI input device, like a piano keyboard, that can be used with any other hardware (ipad, laptop, etc).
+
+This is not based on any existing mechanical keyboard firmware because it's fairly simple.  There's just one GPIO pin to read each switch individually, and two analog inputs used for the joystick.
+
+## Arduino setup and flashing the board
 
 1. Install the official [Arduino IDE](https://www.arduino.cc/en/software).  The "hourly build" is free, the others cost money.
 2. In the Arduino IDE, install the Adafruit board profiles using [instructions from Adafruit](https://learn.adafruit.com/adafruit-feather-32u4-basic-proto/arduino-ide-setup).  Specifically, the Adafruit board manager URL to add is `https://adafruit.github.io/arduino-board-index/package_adafruit_index.json`
@@ -143,13 +150,32 @@ The top layer SVG is flipped so that the laser smoke marks end up inside the cas
 
 Open the arduino code in `thumble_001_arduino`.  Hit the checkmark button to see if it compiles with no problems.
 
-To send the code to the board, press the button with the right arrow.  You do not need to press the reset button on the board when flashing it.
+To send the code to the board, press the button in the IDE's top left corner with the right arrow.  You do not need to press the reset button on the board when flashing it.
 
-## The firmware code
+## Aside: solving "The connected device requires too much power" on iOS devices
 
-This code will turn the microcontroller into a USB MIDI input device, like a piano keyboard, that can be used with any other hardware (ipad, laptop, etc).
+iOS devices will complain that the Thumble is requesting 500mA of power, which is too much.  It doesn't really need that much power, it's just part of the power negotiation process of plugging USB devices together where they claim how much they need.
 
-This is not based on any existing mechanical keyboard firmware because it's fairly simple.
+Unfortunately, fixing this requires hacking a file in the Arduino IDE.  This file is likely to be un-hacked every time the Arduino IDE is updated, so watch out.
+
+These instructions are adapted from https://github.com/arduino-libraries/MIDIUSB/issues/22
+
+1. Find the file `hardware/arduino/avr/cores/arduino/USBCore.h`.  On my mac is was under `/Applications/Arduino.app/Contents/Java/`.  So the total path is `/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/USBCore.h`
+1. Change... `#define USB_CONFIG_POWER    (500)`
+1. To...     `#define USB_CONFIG_POWER    (98)`
+
+Re-flash the board.  Now it will work when plugged into a iOS device via something like the weirdly named [Lightning to USB Camera Adaptor](https://www.apple.com/shop/product/MD821AM/A/lightning-to-usb-camera-adapter), which is not just for cameras but for any USB device.
+
+There's also a version of that adaptor that has an extra lightning power input for wall power -- using that and plugging in wall power at the same time will probably bypass the USB power warning but creates a mess of cables.
+
+I haven't tried this on any USB-C equipped iOS devices.
+
+So my cable setup is: Thumble --> usb-C to usb A cable --> Apple camera adaptor to lightning plug --> iPod Touch
+
+If you don't have an iOS device and you need a portable hardware synth to turn your MIDI into sounds, the [iPod Touch](https://www.apple.com/ipod-touch/) is not a bad option.  It's $200, can run most iOS music apps and synths, battery powered, small, has (tiny) speakers and headphone output.  One could be mounted to a Thumble somehow.
+This is what I use when I'm not at my computer.
+
+P.S. I'd love to hear any other options for portable battery-powered MIDI synths with audio out, I don't want to support Apple specifically.
 
 ## Soldering
 
@@ -247,4 +273,3 @@ So...
 * Add an extra top plate to make the keyswitches not so tall
 * Add extra bottom plate pieces on the handles as grips for the fingers
 * Remember to leave space for a USB cable :)
-* Figure out how to solve the USB requested power draw issue so it works on iOS devices
