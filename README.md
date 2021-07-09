@@ -195,6 +195,8 @@ The joystick uses up two analog inputs and needs a ground and 3v wire too.
 
 Wiring diagram ([click to enlarge](https://raw.githubusercontent.com/cinnamon-bun/thumble/main/final_v006-wiring.png)):
 
+The thick black wiggly wire is a ground wire that connects to each keyswitch.  It fits into the wiggly channel in the plywood.  You can use one long wire for this, or several smaller wires, whatever is easier.
+
 **ERRATA** The joystick board is horizontally flipped in this diagram, but it might not actually matter because the board might be symmetrical.  Double-check.
 
 ![](final_v006-wiring.png)
