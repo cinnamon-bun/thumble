@@ -9,7 +9,7 @@
     - [Joystick](#joystick)
   - [Shepard Tones](#shepard-tones)
   - [Hardware](#hardware)
-    - [Alternative hardware](#alternative-hardware)
+    - [Alternative microcontrollers](#alternative-microcontrollers)
   - [Case](#case)
   - [Assembly sequence](#assembly-sequence)
   - [The firmware code](#the-firmware-code)
@@ -88,7 +88,7 @@ For example:
 
 ## Hardware
 
-1. Arduino / microcontroller: [Feather 32u4 basic proto](https://www.adafruit.com/product/2771), from Adafruit.  If these are out of stock, look for the exact same thing on Amazon (sold by Adafruit).
+1. Arduino / microcontroller: [Feather 32u4 basic proto](https://www.adafruit.com/product/2771) is the simplest Feather board from Adafruit.  If these are out of stock, look for the exact same thing on Amazon (sold by Adafruit).
 1. Cherry MX compatible keyswitches (x 15)
     * I used [Gateron Silent Clear](https://novelkeys.xyz/products/gateron-silent-switches?_pos=2&_sid=fd79d8abc&_ss=r) since they have the weakest springs available and no tactile bump
 1. Keycaps (x 15)
@@ -99,13 +99,23 @@ For example:
 1. Soldering equipment
 1. An app or hardware that accepts MIDI over USB and produces sound (see the Appendix at the end of this file.)
 
-### Alternative hardware
+### Alternative microcontrollers
 
-The [Elite-C](https://keeb.io/products/elite-c-low-profile-version-usb-c-pro-micro-replacement-atmega32u4) uses the same chip as the Feather, but the physical hardware is better.   It's smaller, and it has a strong USB-C port, while the Feather's USB-Micro port tends to rip off if the cord is pulled.
+My advice is to stick with an Adafruit Feather board since they're mostly the same size and pinout, and all work with the Arduino IDE.
+
+Make sure any microcontroller you use has 15 digital inputs and 2 analog inputs.  You'll have to adjust the plywood case to fit, as well.
+
+* Some microcontrollers support Bluetooth Low Energy (BTLE), which you can use to pair with iOS devices for wireless MIDI playback.  Here's [Adafruit's guide](https://learn.adafruit.com/adafruit-feather/bluetooth-feathers).  I tried this and found it worked within about 15 feet, after that latency and jitter became a problem.  I also preferred to plug things together instead of messing with bluetooth menus.  Note also that a wireless Thumble will need a battery, and the Feather boards have integrated lithium battery pack connectors and circuitry.
+
+* The [Elite-C](https://keeb.io/products/elite-c-low-profile-version-usb-c-pro-micro-replacement-atmega32u4) uses the same chip as the Feather, but the physical hardware is better.   It's smaller, and it has a strong USB-C port, while the Feather's USB-Micro port tends to rip off if the cord is pulled.
 
 However the Elite-C can't be flashed from the Arduino IDE (because it uses the DFU bootloader instead of the Caterina bootloader that's normal for Arduino boards.)  You have to use the command line to flash it, and I'm not sure how to compile the code for it or make sure it supports MIDI-over-USB.
 
 If you know how to solve that problem, you can use the Elite-C instead.  Note though that the case is designed for the Feather, which is larger.
+
+* There's a new microcontroller made by Raspberry Pi called the [Raspberry Pi Pico](https://www.adafruit.com/product/4864), using their new RP2040 chip.  It's cheap and there are many variants already such as the [Adafruit feather RP2040](https://www.adafruit.com/product/4884) which has a USB-C port.  This microcontroller works with Circuit Python instead of Arduino, but Arduino code support is in the works.  It's much faster than needed for this project.
+
+* Many mechanical keyboards use some kind of [Teensy](https://www.pjrc.com/teensy/) board, but there are many with different microcontrollers.  I'm guessing you'd want a Teensy 2 since it matches the Atmega 32u4 microcontroller we're using here?  Getting USB MIDI working is [a bit different](https://www.pjrc.com/teensy/td_midi.html) and it may require [special setup to work in the Arduino IDE](https://www.pjrc.com/teensy/teensyduino.html)
 
 ## Case
 
