@@ -129,6 +129,8 @@ The top layer SVG is flipped so that the laser smoke marks end up inside the cas
 
 ## Assembly sequence
 
+Refer also to the build photos below.
+
 1. Software setup:
     1. Install the Arduino IDE and set it up as described below.
     1. Flash software to the microcontroller before you do anything else, just to make sure you can.  You won't be able to test it though.
