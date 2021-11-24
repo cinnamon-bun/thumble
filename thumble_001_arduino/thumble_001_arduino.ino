@@ -289,7 +289,6 @@ void loop() {
         joyCooldown = READ_JOY_EVERY;
 
         // TODO: handle joystick motion, make pitch bends
-
     }
 
     // read keys into the key state arrays
@@ -380,9 +379,9 @@ void onKeyDown(int key) {
 
         if (key >= 0 && key <= 11) {
             // midi keys send notes
-            // TODO: shepard tones
-            int highVol = round((key / 12.0) * 127.0);
-            int baseVol = 127 - highVol;
+            // compute shepard tone volumes
+            int baseVol = round((key / 12.0) * 127.0);
+            int highVol = 127 - baseVol;
             noteOn(midiChannel, keyToMidiNote(key), baseVol);
             noteOn(midiChannel, keyToMidiNote(key) + 12, highVol);
         } else if (key == L_KEY) {
