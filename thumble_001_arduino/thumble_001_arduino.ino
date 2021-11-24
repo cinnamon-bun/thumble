@@ -381,7 +381,10 @@ void onKeyDown(int key) {
         if (key >= 0 && key <= 11) {
             // midi keys send notes
             // TODO: shepard tones
-            noteOn(midiChannel, keyToMidiNote(key), 100);
+            int highVol = round((key / 12.0) * 127.0);
+            int baseVol = 127 - highVol;
+            noteOn(midiChannel, keyToMidiNote(key), baseVol);
+            noteOn(midiChannel, keyToMidiNote(key) + 12, highVol);
         } else if (key == L_KEY) {
             // multimedia volume keys
             volumeDown();
@@ -399,6 +402,7 @@ void onKeyUp(int key) {
     if (key >= 0 && key <= 11 && !keyIsDown[SHIFT_KEY]) {
         // midi keys end their notes when released
         noteOff(midiChannel, keyToMidiNote(key), 100);
+        noteOff(midiChannel, keyToMidiNote(key) + 12, 100);
     }
 }
 
